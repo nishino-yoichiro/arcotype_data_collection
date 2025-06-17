@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Test Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global CSS Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+        }
+
+        .centered-column-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Page-specific width constraints */
+        .quarter-width {
+            max-width: 25%;
+            width: 100%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .third-width {
+            max-width: 33.33%;
+            width: 100%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .instructions-gap {
+            gap: 40px;
+        }
+
+        /* Button Styling */
+        button, .btn {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            color: black;
+            padding: 12px 24px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.4;
+        }
+
+        .large-text {
+            font-size: 26px;
+        }
+
+        /* Grid Styling */
+        #font-grid-2x2,
+        #font-grid-3x3,
+        #font-grid-4x4 {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        #font-grid-2x2 {
+            grid-template-columns: repeat(2, 1fr);
+            width: 300px;
+        }
+
+        #font-grid-3x3 {
+            grid-template-columns: repeat(3, 1fr);
+            width: 450px;
+        }
+
+        #font-grid-4x4 {
+            grid-template-columns: repeat(4, 1fr);
+            width: 600px;
+        }
+
+        .grid-item {
+            background-color: #f7f7f7;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+
+        .grid-item:hover {
+            border-color: #9ca3af;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Timer Styling */
+        #timer-container {
+            width: 300px;
+            height: 10px;
+            background-color: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #timer-bar {
+            height: 100%;
+            background-color: #3b82f6;
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        /* Form Styling */
+        #user-info-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        #user-info-form input,
+        #user-info-form select {
+            width: 624px;
+            height: 44px;
+            background-color: #F7F7F7;
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #user-info-form select option:disabled {
+            color: #9ca3af;
+        }
+
+        #user-info-form button {
+            width: 624px;
+            height: 44px;
+            margin-top: 10px;
+        }
+
+        /* Page-specific styles */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 700px) {
+            #user-info-form input,
+            #user-info-form select,
+            #user-info-form button {
+                width: 90vw;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Page -->
+    <div id="welcome-page" class="page active">
+        <div class="centered-column-box quarter-width">
+            <h1>Welcome!</h1>
+            <p>We're building the first ever, <strong>discovery map of fonts</strong>.</p>
+            <p>There's an initial test to see if you qualify for contributing high-quality data.</p>
+            <p>Once you pass that, you can help us build the most detailed font classification system ever created.</p>
+            <button class="btn" onclick="navigateToPage('instructions-page')">Let's begin →</button>
+        </div>
+    </div>
+
+    <!-- Instructions Page -->
+    <div id="instructions-page" class="page">
+        <div class="centered-column-box third-width instructions-gap">
+            <h2>Initial Test</h2>
+            <p class="large-text">Select the font that is NOT like the others.</p>
+            <button class="btn" onclick="navigateToPage('test-2x2-page')">Okay</button>
+        </div>
+    </div>
+
+    <!-- Test 2x2 Page -->
+    <div id="test-2x2-page" class="page">
+        <div class="centered-column-box">
+            <div id="font-grid-2x2"></div>
+            <div id="timer-container">
+                <div id="timer-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 3x3 Page -->
+    <div id="test-3x3-page" class="page">
+        <div class="centered-column-box">
+            <div id="font-grid-3x3"></div>
+            <div id="timer-container-3x3">
+                <div id="timer-bar-3x3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 4x4 Page -->
+    <div id="test-4x4-page" class="page">
+        <div class="centered-column-box">
+            <div id="font-grid-4x4"></div>
+            <div id="timer-container-4x4">
+                <div id="timer-bar-4x4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page" class="page">
+        <div class="centered-column-box quarter-width">
+            <h1><strong>Congrats!</strong></h1>
+            <p>You've been approved to contribute to our data pool of fonts.</p>
+            <p>Before you begin, we'll ask some quick personal questions to weigh our data properly (ex: type designers get more weight/say)</p>
+            <button class="btn" onclick="navigateToPage('user-info-page')">Continue</button>
+        </div>
+    </div>
+
+    <!-- Fail Page -->
+    <div id="fail-page" class="page">
+        <div class="centered-column-box quarter-width">
+            <h1><strong>You did not pass.</strong></h1>
+            <p>Maybe practice looking at some more fonts?</p>
+            <button id="exit-btn">Exit</button>
+        </div>
+    </div>
+
+    <!-- User Info Page -->
+    <div id="user-info-page" class="page">
+        <div class="centered-column-box third-width">
+            <form id="user-info-form">
+                <input type="text" placeholder="Name" required>
+                <select required>
+                    <option value="" disabled selected>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="non-binary">Non-binary</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+                <input type="text" placeholder="Age" required>
+                <input type="text" placeholder="Location" required>
+                <input type="text" placeholder="Profession" required>
+                <select required>
+                    <option value="" disabled selected>Are you a type designer?</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+                <input type="url" placeholder="Link to socials/site (keep to 1 please)">
+                <button type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentTimer = null;
+        let currentInterval = null;
+        let fontPairsManifest = [];
+        
+        // **NEW FUNCTION** to preload all possible test images in the background
+        function preloadAllTestImages() {
+            if (fontPairsManifest.length === 0) return;
+
+            console.log('Preloading all test images...');
+            fontPairsManifest.forEach(pair => {
+                const folder = pair.folder;
+                pair.files.forEach(file => {
+                    const img = new Image(); // Create a new image object
+                    img.src = `assets/pairs/${folder}/${file}`; // Set its src to start the download
+                });
+            });
+            console.log('Image preloading initiated.');
+        }
+
+        // Load font pairs manifest
+        async function loadFontManifest() {
+            try {
+                const response = await fetch('assets/manifest.json');
+                const manifest = await response.json();
+                fontPairsManifest = manifest.fontPairs || [];
+                console.log('Loaded font pairs:', fontPairsManifest);
+                
+                // **CALL THE NEW FUNCTION HERE**
+                preloadAllTestImages(); // Start preloading after the manifest is ready
+
+            } catch (error) {
+                console.error('Failed to load font manifest:', error);
+                // Fallback to dummy data for testing
+                fontPairsManifest = [
+                    { folder: 'pair1', files: ['fontA.png', 'fontB.png'] },
+                    { folder: 'pair2', files: ['fontA.png', 'fontB.png'] },
+                    { folder: 'pair3', files: ['fontA.png', 'fontB.png'] }
+                ];
+                // Also preload fallback images if the manifest fails
+                preloadAllTestImages();
+            }
+        }
+
+        // Navigation function
+        function navigateToPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show target page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Initialize test if it's a test page
+            if (pageId === 'test-2x2-page') {
+                initTest(2, 'font-grid-2x2', 'timer-bar');
+            } else if (pageId === 'test-3x3-page') {
+                initTest(3, 'font-grid-3x3', 'timer-bar-3x3');
+            } else if (pageId === 'test-4x4-page') {
+                initTest(4, 'font-grid-4x4', 'timer-bar-4x4');
+            }
+        }
+
+        // Initialize test function
+        function initTest(gridSize, gridId, timerId) {
+            clearTimers();
+            
+            if (fontPairsManifest.length === 0) {
+                console.error('No font pairs available');
+                return;
+            }
+            
+            // Get random font pair from manifest
+            const randomPairData = fontPairsManifest[Math.floor(Math.random() * fontPairsManifest.length)];
+            const { folder, files } = randomPairData;
+            
+            // Randomly designate which font is the odd one out
+            const oddFontIndex = Math.floor(Math.random() * files.length);
+            const oddFont = files[oddFontIndex];
+            const commonFont = files[1 - oddFontIndex]; // Get the other font
+            
+            // Get grid container
+            const gridContainer = document.getElementById(gridId);
+            gridContainer.innerHTML = '';
+            
+            // Calculate total cells and random correct position
+            const totalCells = gridSize * gridSize;
+            const correctPosition = Math.floor(Math.random() * totalCells);
+            
+            // Create grid items
+            for (let i = 0; i < totalCells; i++) {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                
+                const img = document.createElement('img');
+                
+                // Load from assets/pairs/folderName/
+                if (i === correctPosition) {
+                    // This is the odd one out
+                    img.src = `assets/pairs/${folder}/${oddFont}`;
+                    gridItem.setAttribute('data-correct', 'true');
+                    
+                    // Fallback placeholder for demo
+                    img.onerror = function() {
+                        this.src = `data:image/svg+xml;base64,${btoa(generateFontImage('ODD', '#ff6b6b'))}`;
+                    };
+                } else {
+                    // These are the common fonts
+                    img.src = `assets/pairs/${folder}/${commonFont}`;
+                    gridItem.setAttribute('data-correct', 'false');
+                    
+                    // Fallback placeholder for demo
+                    img.onerror = function() {
+                        this.src = `data:image/svg+xml;base64,${btoa(generateFontImage('SAME', '#4ecdc4'))}`;
+                    };
+                }
+                
+                img.alt = 'Font sample';
+                gridItem.appendChild(img);
+                
+                // Add click event listener
+                gridItem.addEventListener('click', function() {
+                    handleGridClick(this);
+                });
+                
+                gridContainer.appendChild(gridItem);
+            }
+            
+            // Start timer
+            startTimer(timerId);
+        }
+
+        // Generate placeholder font image
+        function generateFontImage(text, color) {
+            return `<svg width="120" height="80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="80" fill="${color}"/>
+                <text x="60" y="45" font-family="serif" font-size="16" text-anchor="middle" fill="white">${text}</text>
+            </svg>`;
+        }
+
+        // Handle grid click
+        function handleGridClick(element) {
+            clearTimers();
+            
+            const isCorrect = element.getAttribute('data-correct') === 'true';
+            
+            if (isCorrect) {
+                // Determine next page based on current page
+                if (document.getElementById('test-2x2-page').classList.contains('active')) {
+                    navigateToPage('test-3x3-page');
+                } else if (document.getElementById('test-3x3-page').classList.contains('active')) {
+                    navigateToPage('test-4x4-page');
+                } else if (document.getElementById('test-4x4-page').classList.contains('active')) {
+                    navigateToPage('success-page');
+                }
+            } else {
+                navigateToPage('fail-page');
+            }
+        }
+
+        // Start timer
+        function startTimer(timerId) {
+            const timerBar = document.getElementById(timerId);
+            let timeLeft = 10;
+            const interval = 100; // Update every 100ms
+            const totalIntervals = (timeLeft * 1000) / interval;
+            let currentIntervals = 0;
+            
+            const timerInterval = setInterval(() => {
+                currentIntervals++;
+                const percentage = ((totalIntervals - currentIntervals) / totalIntervals) * 100;
+                timerBar.style.width = percentage + '%';
+                
+                if (currentIntervals >= totalIntervals) {
+                    clearInterval(timerInterval);
+                }
+            }, interval);
+            
+            // Set timeout for fail condition
+            currentTimer = setTimeout(() => {
+                clearInterval(timerInterval);
+                navigateToPage('fail-page');
+            }, timeLeft * 1000);
+            
+            // Store interval reference
+            window.currentInterval = timerInterval;
+        }
+
+        // Clear all timers
+        function clearTimers() {
+            if (currentTimer) {
+                clearTimeout(currentTimer);
+                currentTimer = null;
+            }
+            if (window.currentInterval) {
+                clearInterval(window.currentInterval);
+                window.currentInterval = null;
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load font manifest on page load
+            loadFontManifest();
+            
+            // Exit button listener
+            document.getElementById('exit-btn').addEventListener('click', function() {
+                window.close();
+            });
+            
+            // Form submission listener
+            document.getElementById('user-info-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Redirect to main data collection site
+                window.location.href = 'https://example.com/datacollection';
+            });
+        });
+    </script>
+</body>
+</html>
