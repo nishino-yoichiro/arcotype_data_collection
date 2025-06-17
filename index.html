@@ -135,15 +135,24 @@
         }
 
         /* Timer Styling */
-        #timer-container {
-            width: 300px;
+        #timer-container,
+        #timer-container-3x3,
+        #timer-container-4x4 {
             height: 10px;
             background-color: #e5e7eb;
             border-radius: 5px;
             overflow: hidden;
         }
 
-        #timer-bar {
+        /* Set width for each specific timer container */
+        #timer-container { width: 300px; }
+        #timer-container-3x3 { width: 450px; }
+        #timer-container-4x4 { width: 600px; }
+
+        /* Style ALL timer bars */
+        #timer-bar,
+        #timer-bar-3x3,
+        #timer-bar-4x4 {
             height: 100%;
             background-color: #3b82f6;
             width: 100%;
