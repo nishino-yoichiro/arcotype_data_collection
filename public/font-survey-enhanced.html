@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Survey - Enhanced</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            z-index: 1000;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #000;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        /* Fixed position indicators */
+        .font-counter {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            z-index: 1000;
+        }
+        .question-type {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+            z-index: 1000;
+        }
+        
+        /* "I'm done training" button - fixed position top right */
+        .done-training-button {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            background: #f7f7f7;
+            border: 1px solid #dfdfdf;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1000;
+        }
+        .done-training-button:hover {
+            background: #e0e0e0;
+        }
+        
+        /* Updated continue container to stack buttons vertically */
+        .continue-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 2rem;
+        }
+        
+        /* Key button styles - smaller and positioned above continue */
+        .key-button {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 4px 8px;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+            order: 1;
+        }
+        .key-button:hover {
+            color: #000;
+        }
+        
+        /* Continue button positioned below key button */
+        .continue-button {
+            order: 2;
+        }
+        
+        /* Popup overlay styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .popup-overlay.active {
+            display: flex;
+        }
+        
+        /* Updated popup content styles - image only, smaller size */
+        .popup-content {
+            position: relative;
+            max-width: 70vw;
+            max-height: 70vh;
+            background: transparent;
+            border-radius: 0;
+            overflow: visible;
+            box-shadow: none;
+        }
+        
+        .popup-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Updated close button - positioned over the image */
+        .close-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            z-index: 2001;
+        }
+        .close-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        /* Add more space between progress bar and content */
+        .page-two,
+        .vibe-page {
+            padding-top: 60px !important;
+        }
+        
+        .decor-image,
+        .vibe-font-image {
+            margin-top: 20px;
+        }
+        
+        /* Thank you page styles */
+        .thank-you-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            text-align: center;
+        }
+        .thank-title {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            margin-bottom: 1.5rem;
+        }
+        .thank-subtitle {
+            font-size: 1rem;
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            margin-bottom: 2.5rem;
+        }
+        .follow-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            margin-bottom: 2rem;
+        }
+        .social-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+        .social-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .instagram-btn {
+            background: #000;
+            color: #fff;
+        }
+        .instagram-btn:hover {
+            background: #333;
+        }
+        .email-btn {
+            background: #666;
+            color: #fff;
+        }
+        .email-btn:hover {
+            background: #888;
+        }
+        
+        @media (max-width: 768px) {
+            .thank-title {
+                font-size: 2.5rem;
+            }
+            .social-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .social-btn {
+                width: 200px;
+            }
+            .font-counter {
+                left: 12px;
+                top: 12px;
+                font-size: 12px;
+            }
+            .question-type {
+                top: 12px;
+                font-size: 12px;
+            }
+            .done-training-button {
+                top: 12px;
+                right: 12px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .popup-content {
+                max-width: 85vw;
+                max-height: 85vh;
+            }
+            .close-button {
+                top: 8px;
+                right: 8px;
+                width: 24px;
+                height: 24px;
+                font-size: 14px;
+            }
+            .page-two,
+            .vibe-page {
+                padding-top: 50px !important;
+            }
+            .key-button {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    
+    <!-- Font counter -->
+    <div class="font-counter" id="fontCounter">Font 1 of 10</div>
+    
+    <!-- Question type indicator -->
+    <div class="question-type" id="questionType">Decorativeness</div>
+    
+    <!-- "I'm done training" button -->
+    <button class="done-training-button" onclick="finishTraining()">I'm done training</button>
+    
+    <!-- Popup overlay for decorativeness key -->
+    <div class="popup-overlay" id="keyPopup">
+        <div class="popup-content">
+            <button class="close-button" onclick="closeKeyPopup()">&times;</button>
+            <img src="popup.png" alt="Decorativeness Chart Key" class="popup-image">
+        </div>
+    </div>
+    
+    <!-- Main content container -->
+    <div id="surveyContent"></div>
+
+    <script>
+        // Configuration
+        const TOTAL_FONTS = 10;
+        const QUESTIONS_PER_FONT = 3; // decorativeness, vibes, use cases
+        const TOTAL_QUESTIONS = TOTAL_FONTS * QUESTIONS_PER_FONT;
+        
+        const VIBE_OPTIONS = ["Bold", "Delicate", "Sharp", "Bubbly", "Sophisticated", "Vintage", "Futuristic", "Professional", "Playful", "Elegant", "Modern", "Weird", "Clean", "Retro"];
+        const USECASE_OPTIONS = ["Website", "Branding", "Poster", "Presentation", "Packaging", "Book", "Headline", "Menu", "Copy", "Editorials", "Merch"];
+
+        // State management
+        let currentState = {
+            uid: null,
+            fonts: [],
+            currentFontIndex: 0,
+            currentQuestionType: 0, // 0: decorativeness, 1: vibes, 2: use cases
+            surveyData: [],
+            totalProgress: 0
+        };
+
+        // Question types
+        const QUESTION_TYPES = ['Decorativeness', 'Vibes', 'Use Cases'];
+
+        // "I'm done training" functionality
+        function finishTraining() {
+            if (confirm('Are you sure you want to finish training and return to the home page? Your current progress will be saved.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Key popup functionality
+        function openKeyPopup() {
+            document.getElementById('keyPopup').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeKeyPopup() {
+            document.getElementById('keyPopup').classList.remove('active');
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('keyPopup');
+            if (event.target === popup) {
+                closeKeyPopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeKeyPopup();
+            }
+        });
+
+        // Initialize survey
+        async function initSurvey() {
+            // Check if user is logged in
+            currentState.uid = localStorage.getItem('uid');
+            if (!currentState.uid) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Load or fetch fonts
+            await loadFonts();
+            
+            // Initialize survey data array
+            currentState.surveyData = new Array(TOTAL_FONTS).fill(null).map(() => ({
+                fontId: null,
+                decorativeness: null,
+                vibes: [],
+                customVibes: [],
+                useCases: [],
+                customUseCases: []
+            }));
+
+            // Start survey
+            renderCurrentQuestion();
+        }
+
+        async function loadFonts() {
+            // Try to get fonts from localStorage first
+            const storedFonts = localStorage.getItem('currentFonts');
+            if (storedFonts) {
+                currentState.fonts = JSON.parse(storedFonts);
+                if (currentState.fonts.length === TOTAL_FONTS) {
+                    return;
+                }
+            }
+
+            // Fetch new fonts
+            currentState.fonts = [];
+            const maxAttempts = TOTAL_FONTS * 3; // Try 3x more to avoid duplicates
+            let attempts = 0;
+            const fontIds = new Set();
+
+            while (currentState.fonts.length < TOTAL_FONTS && attempts < maxAttempts) {
+                try {
+                    const response = await fetch('/api/fonts/random');
+                    const result = await response.json();
+                    
+                    if (result.success && !fontIds.has(result.font.fontId)) {
+                        fontIds.add(result.font.fontId);
+                        currentState.fonts.push(result.font);
+                    }
+                } catch (error) {
+                    console.error('Error fetching font:', error);
+                }
+                attempts++;
+            }
+
+            if (currentState.fonts.length < TOTAL_FONTS) {
+                alert(`Warning: Only ${currentState.fonts.length} fonts available. Survey will continue with available fonts.`);
+            }
+
+            // Save fonts to localStorage
+            localStorage.setItem('currentFonts', JSON.stringify(currentState.fonts));
+        }
+
+        function updateProgress() {
+            const questionNumber = (currentState.currentFontIndex * QUESTIONS_PER_FONT) + currentState.currentQuestionType + 1;
+            const progressPercent = (questionNumber / TOTAL_QUESTIONS) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('fontCounter').textContent = `Font ${currentState.currentFontIndex + 1} of ${TOTAL_FONTS}`;
+            document.getElementById('questionType').textContent = QUESTION_TYPES[currentState.currentQuestionType];
+        }
+
+        function renderCurrentQuestion() {
+            // Check if survey is complete
+            if (currentState.currentFontIndex >= currentState.fonts.length) {
+                renderThankYouPage();
+                return;
+            }
+
+            updateProgress();
+            const currentFont = currentState.fonts[currentState.currentFontIndex];
+
+            switch (currentState.currentQuestionType) {
+                case 0:
+                    renderDecorativenessQuestion(currentFont);
+                    break;
+                case 1:
+                    renderVibesQuestion(currentFont);
+                    break;
+                case 2:
+                    renderUseCasesQuestion(currentFont);
+                    break;
+            }
+        }
+
+        function renderDecorativenessQuestion(font) {
+            document.getElementById('surveyContent').innerHTML = `
+                <div class="page-two">
+                    <img src="${font.imagePath}" alt="Font sample" class="decor-image">
+                    <div class="question-block">
+                        <div class="question">How decorative is this font?</div>
+                        <div class="scale-label">0 = Minimal, 9 = Decorative</div>
+                    </div>
+                    <div class="slider-block">
+                        <input id="decorSlider" class="slider" type="range" min="0" max="9" value="0">
+                        <div class="slider-labels">
+                            <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                            <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                        </div>
+                    </div>
+                    <div class="continue-container">
+                        <button class="key-button" onclick="openKeyPopup()">Key</button>
+                        <button class="continue-button" onclick="submitDecorativenessAnswer()">Continue</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitDecorativenessAnswer() {
+            const value = parseInt(document.getElementById('decorSlider').value);
+            const currentFont = currentState.fonts[currentState.currentFontIndex];
+            
+            currentState.surveyData[currentState.currentFontIndex].fontId = currentFont.fontId;
+            currentState.surveyData[currentState.currentFontIndex].decorativeness = value;
+            
+            currentState.currentQuestionType = 1;
+            renderCurrentQuestion();
+        }
+
+        function renderVibesQuestion(font) {
+            document.getElementById('surveyContent').innerHTML = `
+                <div class="vibe-page">
+                    <img src="${font.imagePath}" alt="Font sample" class="vibe-font-image">
+                    <div class="vibe-instruction">Select all of the following vibes that fit this font:</div>
+                    <div class="vibe-tags" id="vibeTags">
+                        ${VIBE_OPTIONS.map(vibe => `
+                            <div class="vibe-tag" onclick="toggleVibeTag(this)" data-value="${vibe}">${vibe}</div>
+                        `).join('')}
+                    </div>
+                    <div class="custom-vibe-inputs">
+                        <input type="text" id="customVibe1" placeholder="Custom vibe 1" maxlength="30">
+                        <input type="text" id="customVibe2" placeholder="Custom vibe 2" maxlength="30">
+                        <input type="text" id="customVibe3" placeholder="Custom vibe 3" maxlength="30">
+                    </div>
+                    <div class="continue-container">
+                        <button class="continue-button" onclick="submitVibesAnswer()">Continue</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleVibeTag(element) {
+            element.classList.toggle('selected');
+        }
+
+        function submitVibesAnswer() {
+            const selectedVibes = Array.from(document.querySelectorAll('.vibe-tag.selected'))
+                .map(tag => tag.dataset.value);
+            
+            const customVibes = [
+                document.getElementById('customVibe1').value.trim(),
+                document.getElementById('customVibe2').value.trim(),
+                document.getElementById('customVibe3').value.trim()
+            ].filter(vibe => vibe !== '');
+
+            if (selectedVibes.length === 0 && customVibes.length === 0) {
+                alert('Please select at least one vibe or enter a custom vibe.');
+                return;
+            }
+
+            currentState.surveyData[currentState.currentFontIndex].vibes = selectedVibes;
+            currentState.surveyData[currentState.currentFontIndex].customVibes = customVibes;
+            
+            currentState.currentQuestionType = 2;
+            renderCurrentQuestion();
+        }
+
+        function renderUseCasesQuestion(font) {
+            document.getElementById('surveyContent').innerHTML = `
+                <div class="vibe-page">
+                    <img src="${font.imagePath}" alt="Font sample" class="vibe-font-image">
+                    <div class="vibe-instruction">Select all of the following use cases that fit this font:</div>
+                    <div class="vibe-tags" id="useCaseTags">
+                        ${USECASE_OPTIONS.map(useCase => `
+                            <div class="vibe-tag" onclick="toggleUseCaseTag(this)" data-value="${useCase}">${useCase}</div>
+                        `).join('')}
+                    </div>
+                    <div class="custom-vibe-inputs">
+                        <input type="text" id="customUseCase1" placeholder="Custom use case 1" maxlength="30">
+                        <input type="text" id="customUseCase2" placeholder="Custom use case 2" maxlength="30">
+                        <input type="text" id="customUseCase3" placeholder="Custom use case 3" maxlength="30">
+                    </div>
+                    <div class="continue-container">
+                        <button class="continue-button" onclick="submitUseCasesAnswer()">
+                            ${currentState.currentFontIndex === currentState.fonts.length - 1 ? 'Complete Survey' : 'Continue to Next Font'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleUseCaseTag(element) {
+            element.classList.toggle('selected');
+        }
+
+        async function submitUseCasesAnswer() {
+            const selectedUseCases = Array.from(document.querySelectorAll('#useCaseTags .vibe-tag.selected'))
+                .map(tag => tag.dataset.value);
+            
+            const customUseCases = [
+                document.getElementById('customUseCase1').value.trim(),
+                document.getElementById('customUseCase2').value.trim(),
+                document.getElementById('customUseCase3').value.trim()
+            ].filter(useCase => useCase !== '');
+
+            if (selectedUseCases.length === 0 && customUseCases.length === 0) {
+                alert('Please select at least one use case or enter a custom use case.');
+                return;
+            }
+
+            currentState.surveyData[currentState.currentFontIndex].useCases = selectedUseCases;
+            currentState.surveyData[currentState.currentFontIndex].customUseCases = customUseCases;
+
+            // Submit this font's survey data to backend
+            const currentFontData = currentState.surveyData[currentState.currentFontIndex];
+            const surveyPayload = {
+                uid: currentState.uid,
+                fontId: currentFontData.fontId,
+                decorativeness: currentFontData.decorativeness,
+                vibes: currentFontData.vibes,
+                customVibes: currentFontData.customVibes,
+                useCases: currentFontData.useCases,
+                customUseCases: currentFontData.customUseCases
+            };
+
+            try {
+                const response = await fetch('/api/surveys', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(surveyPayload)
+                });
+
+                const result = await response.json();
+                if (!result.success) {
+                    alert('Error submitting survey: ' + result.message);
+                    return;
+                }
+
+                console.log(`Font ${currentState.currentFontIndex + 1} survey submitted successfully`);
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                alert('Network error. Please check your connection.');
+                return;
+            }
+
+            // Move to next font
+            currentState.currentFontIndex++;
+            currentState.currentQuestionType = 0;
+            renderCurrentQuestion();
+        }
+
+        function renderThankYouPage() {
+            // Clear the progress indicators
+            document.getElementById('fontCounter').style.display = 'none';
+            document.getElementById('questionType').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.done-training-button').style.display = 'none';
+
+            // Clear localStorage
+            localStorage.removeItem('currentFonts');
+            localStorage.removeItem('surveyProgress');
+
+            document.getElementById('surveyContent').innerHTML = `
+                <div class="thank-you-page">
+                    <div class="thank-title">Thank you!</div>
+                    <div class="thank-subtitle">Thank you for contributing to our data collection!</div>
+                    <div class="follow-title">Follow Arcotype™</div>
+                    <div class="social-buttons">
+                        <a href="https://www.instagram.com/arcotype" target="_blank" class="social-btn instagram-btn">Instagram</a>
+                        <a href="mailto:gabbisoong@gmail.com" class="social-btn email-btn">Email</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Start the survey when page loads
+        window.addEventListener('load', initSurvey);
+    </script>
+</body>
+</html>

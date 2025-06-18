@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Survey - User Information</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-button {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            background: #e8e8e8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1000;
+            text-decoration: none;
+            color: #333;
+        }
+        .admin-button:hover {
+            background: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Button -->
+    <a href="admin-login.html" class="admin-button">Admin</a>
+    
+    <div class="wrapper">
+        <div class="form">
+            <div class="form-box">
+                <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="form-box">
+                <input type="number" id="age" placeholder="Age" min="1" max="120" required>
+            </div>
+            <div class="form-box">
+                <select id="gender" required>
+                    <option value="" disabled selected>Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-box">
+                <input type="text" id="location" placeholder="Location (City, Country)" required>
+            </div>
+            <div class="form-box">
+                <input type="text" id="profession" placeholder="Profession" required>
+            </div>
+            <div class="form-box">
+                <select id="isTypeDesigner" required>
+                    <option value="" disabled selected>Are you a type designer?</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="form-box">
+                <input type="text" id="socialLink" placeholder="Social Media Link (Optional)">
+            </div>
+            <div class="continue-container">
+                <button class="continue-button" onclick="submitUserInfo()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function submitUserInfo() {
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const location = document.getElementById('location').value.trim();
+            const profession = document.getElementById('profession').value.trim();
+            const isTypeDesigner = document.getElementById('isTypeDesigner').value;
+            const socialLink = document.getElementById('socialLink').value.trim();
+
+            // Validation
+            if (!name || !age || !gender || !location || !profession || !isTypeDesigner) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            if (age < 1 || age > 120) {
+                alert('Please enter a valid age between 1 and 120.');
+                return;
+            }
+
+            // Show loading state
+            const button = document.querySelector('.continue-button');
+            const originalText = button.textContent;
+            button.textContent = 'Creating account...';
+            button.disabled = true;
+
+            // Prepare data
+            const userData = {
+                name: name,
+                age: parseInt(age),
+                gender: gender,
+                location: location,
+                profession: profession,
+                isTypeDesigner: isTypeDesigner,
+                socialLink: socialLink || null
+            };
+
+            try {
+                // Submit to backend
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Store user ID for survey
+                    localStorage.setItem('uid', result.uid);
+                    localStorage.setItem('userName', name);
+                    
+                    // Clear any previous survey data
+                    localStorage.removeItem('surveyProgress');
+                    localStorage.removeItem('currentFonts');
+                    
+                    console.log(`User created successfully: ${name} (UID: ${result.uid})`);
+                    
+                    // Redirect to enhanced survey
+                    window.location.href = 'font-survey-enhanced.html';
+                } else {
+                    throw new Error(result.message || 'Failed to create user');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error creating user: ' + error.message);
+                
+                // Restore button state
+                button.textContent = originalText;
+                button.disabled = false;
+            }
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitUserInfo();
+            }
+        });
+
+        // Clear any existing session data on page load
+        window.addEventListener('load', function() {
+            // Only clear if this is a fresh start (not a back navigation)
+            if (!document.referrer.includes('font-survey-enhanced.html')) {
+                localStorage.removeItem('uid');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('surveyProgress');
+                localStorage.removeItem('currentFonts');
+            }
+        });
+    </script>
+</body>
+</html>

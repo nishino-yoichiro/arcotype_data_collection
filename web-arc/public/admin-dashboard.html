@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Font Survey</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #e5e5e5;
+        }
+
+        .btn-secondary:hover {
+            background: #eee;
+            border-color: #ddd;
+        }
+
+        .btn-danger {
+            background: #fff;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .stat-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .data-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 24px;
+            text-align: left;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .data-table th {
+            background: #fafafa;
+            font-weight: 500;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #fafafa;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e5e5e5;
+            border-radius: 50%;
+            border-top-color: #333;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #dc2626;
+            padding: 16px 24px;
+            border-left: 4px solid #dc2626;
+            margin: 16px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .tab.active {
+            color: #1a1a1a;
+            background: white;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        .tab:hover:not(.active) {
+            color: #1a1a1a;
+            background: #f5f5f5;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .badge.designer {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .section-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px 12px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">Font Survey Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="refreshBtn">
+                    🔄 Refresh
+                </button>
+                <button class="btn btn-primary" id="exportBtn">
+                    📊 Export CSV
+                </button>
+                <button class="btn btn-danger" id="logoutBtn">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Statistics Section -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-title">Total Users</div>
+                <div class="stat-value" id="totalUsers">-</div>
+                <div class="stat-description">Registered participants</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Surveys</div>
+                <div class="stat-value" id="totalSurveys">-</div>
+                <div class="stat-description">Completed responses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Fonts</div>
+                <div class="stat-value" id="totalFonts">-</div>
+                <div class="stat-description">Available in database</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Type Designers</div>
+                <div class="stat-value" id="typeDesigners">-</div>
+                <div class="stat-description">Professional participants</div>
+            </div>
+        </div>
+
+        <!-- Data Section -->
+        <div class="data-section">
+            <div class="tabs">
+                <button class="tab active" data-tab="surveys">Survey Responses</button>
+                <button class="tab" data-tab="users">Users</button>
+                <button class="tab" data-tab="fonts">Fonts</button>
+            </div>
+
+            <!-- Survey Data Tab -->
+            <div class="tab-content active" id="surveys-tab">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Survey Responses</h2>
+                    <div class="section-actions">
+                        <span class="badge" id="surveyCount">0 responses</span>
+                    </div>
+                </div>
+                <div id="surveysContent">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div>Loading survey data...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-content" id="users-tab">
+                <div class="section-header">
+                    <h2 class="section-title">User Demographics</h2>
+                    <div class="section-actions">
+                        <span class="badge" id="userCount">0 users</span>
+                    </div>
+                </div>
+                <div id="usersContent">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div>Loading user data...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fonts Tab -->
+            <div class="tab-content" id="fonts-tab">
+                <div class="section-header">
+                    <h2 class="section-title">Font Library</h2>
+                    <div class="section-actions">
+                        <span class="badge" id="fontCount">0 fonts</span>
+                    </div>
+                </div>
+                <div id="fontsContent">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div>Loading font data...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Global variables
+        let surveyData = [];
+        let userData = [];
+        let fontData = [];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                loadDashboardData();
+            });
+
+            // Export button
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                exportData();
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    logout();
+                }
+            });
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Load statistics
+                await loadStats();
+                
+                // Load survey data
+                await loadSurveyData();
+                
+                // Load users and fonts data from survey responses
+                processUserAndFontData();
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showError('Failed to load dashboard data. Please try refreshing the page.');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalUsers').textContent = data.stats.totalUsers || 0;
+                    document.getElementById('totalSurveys').textContent = data.stats.totalSurveys || 0;
+                    document.getElementById('totalFonts').textContent = data.stats.totalFonts || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadSurveyData() {
+            try {
+                const response = await fetch('/api/admin/surveys');
+                const data = await response.json();
+                
+                if (data.success) {
+                    surveyData = data.surveys;
+                    renderSurveyTable();
+                    updateSurveyCount();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error loading surveys:', error);
+                document.getElementById('surveysContent').innerHTML = 
+                    `<div class="error">Error loading survey data: ${error.message}</div>`;
+            }
+        }
+
+        function processUserAndFontData() {
+            // Extract unique users and fonts from survey data
+            const users = new Map();
+            const fonts = new Map();
+            let typeDesignerCount = 0;
+
+            surveyData.forEach(survey => {
+                // Process users
+                if (!users.has(survey.uid)) {
+                    users.set(survey.uid, {
+                        uid: survey.uid,
+                        name: survey.name,
+                        age: survey.age,
+                        gender: survey.gender,
+                        location: survey.location,
+                        profession: survey.profession,
+                        is_type_designer: survey.is_type_designer,
+                        social_link: survey.social_link,
+                        survey_count: 0
+                    });
+                    
+                    if (survey.is_type_designer) {
+                        typeDesignerCount++;
+                    }
+                }
+                users.get(survey.uid).survey_count++;
+
+                // Process fonts
+                if (!fonts.has(survey.font_id)) {
+                    fonts.set(survey.font_id, {
+                        font_id: survey.font_id,
+                        font_name: survey.font_name,
+                        image_path: survey.image_path,
+                        survey_count: 0
+                    });
+                }
+                fonts.get(survey.font_id).survey_count++;
+            });
+
+            userData = Array.from(users.values());
+            fontData = Array.from(fonts.values());
+
+            // Update type designer count
+            document.getElementById('typeDesigners').textContent = typeDesignerCount;
+
+            renderUserTable();
+            renderFontTable();
+            updateUserCount();
+            updateFontCount();
+        }
+
+        function renderSurveyTable() {
+            const content = document.getElementById('surveysContent');
+            
+            if (surveyData.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h3>No survey responses yet</h3>
+                        <p>Survey responses will appear here once users start submitting.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Font</th>
+                            <th>Decorativeness</th>
+                            <th>Vibes</th>
+                            <th>Use Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${surveyData.slice(0, 50).map(survey => `
+                            <tr>
+                                <td>${new Date(survey.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    ${survey.name}
+                                    ${survey.is_type_designer ? '<span class="badge designer">Designer</span>' : ''}
+                                </td>
+                                <td>${survey.font_name}</td>
+                                <td>${survey.decorativeness}/9</td>
+                                <td>${survey.vibes.slice(0, 2).join(', ')}${survey.vibes.length > 2 ? '...' : ''}</td>
+                                <td>${survey.use_cases.slice(0, 2).join(', ')}${survey.use_cases.length > 2 ? '...' : ''}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            content.innerHTML = tableHTML;
+        }
+
+        function renderUserTable() {
+            const content = document.getElementById('usersContent');
+            
+            if (userData.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <h3>No users yet</h3>
+                        <p>User data will appear here once people start participating.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Location</th>
+                            <th>Profession</th>
+                            <th>Type Designer</th>
+                            <th>Surveys</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${userData.map(user => `
+                            <tr>
+                                <td>${user.name}</td>
+                                <td>${user.age}</td>
+                                <td>${user.gender}</td>
+                                <td>${user.location}</td>
+                                <td>${user.profession}</td>
+                                <td>${user.is_type_designer ? '<span class="badge designer">Yes</span>' : 'No'}</td>
+                                <td>${user.survey_count}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            content.innerHTML = tableHTML;
+        }
+
+        function renderFontTable() {
+            const content = document.getElementById('fontsContent');
+            
+            if (fontData.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔤</div>
+                        <h3>No fonts yet</h3>
+                        <p>Font data will appear here once fonts are loaded into the system.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Font ID</th>
+                            <th>Font Name</th>
+                            <th>Image Path</th>
+                            <th>Survey Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${fontData.map(font => `
+                            <tr>
+                                <td>${font.font_id}</td>
+                                <td>${font.font_name}</td>
+                                <td>${font.image_path}</td>
+                                <td>${font.survey_count}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            content.innerHTML = tableHTML;
+        }
+
+        function updateSurveyCount() {
+            document.getElementById('surveyCount').textContent = `${surveyData.length} responses`;
+        }
+
+        function updateUserCount() {
+            document.getElementById('userCount').textContent = `${userData.length} users`;
+        }
+
+        function updateFontCount() {
+            document.getElementById('fontCount').textContent = `${fontData.length} fonts`;
+        }
+
+        function exportData() {
+            const exportBtn = document.getElementById('exportBtn');
+            const originalText = exportBtn.innerHTML;
+            
+            exportBtn.innerHTML = '<span class="loading"></span>Exporting...';
+            exportBtn.disabled = true;
+            
+            // Create a link to download the CSV
+            const link = document.createElement('a');
+            link.href = '/api/admin/export/csv';
+            link.download = `font-survey-data-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Reset button after a delay
+            setTimeout(() => {
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+            }, 2000);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminLoginTime');
+            window.location.href = 'index.html';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            document.querySelector('.main-content').prepend(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
